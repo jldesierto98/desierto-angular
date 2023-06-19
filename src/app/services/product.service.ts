@@ -21,6 +21,18 @@ export class ProductService {
 
   //method to get the product list from our backend
   //map the JSON data from backend (SpringBoot) to Product array.
+  getProductListPaginate(thePage:number, 
+                         thePageSize: number, 
+                         theCategoryId: number): Observable<GetResponseProducts>{
+    //build the URL
+    const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}`
+                          + `&page=${thePage}&size=${thePageSize}`
+
+    return this.httpClient.get<GetResponseProducts>(searchUrl);
+}
+
+  //method to get the product list from our backend
+  //map the JSON data from backend (SpringBoot) to Product array.
   getProductList(theCategoryId: number): Observable<Product[]>{
       //build the URL
       const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}`;
@@ -61,6 +73,12 @@ export class ProductService {
 interface GetResponseProducts{
   _embedded:{
     products: Product[];
+  },
+  page: {
+    size: number,
+    totalElements: number,
+    totalPages: number,
+    number: number
   }
 }
 

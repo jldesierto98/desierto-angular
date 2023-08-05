@@ -1,6 +1,7 @@
 export class ProductListResponse {
 
-    constructor(public imageUrl: String,
+    constructor(public id:number,
+                public imageUrl: String,
                 public name: String,
                 public unitPrice: number,
                 ) {                   

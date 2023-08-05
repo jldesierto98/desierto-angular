@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from 'src/app/services/product.service';
 import { Product } from 'src/app/common/product';
 import { ActivatedRoute } from '@angular/router';
+import { ProductListRequest } from 'src/app/request/product-list-request';
+import { ProductListResponse } from 'src/app/response/product-list-response';
 
 @Component({
   selector: 'app-product-list',
@@ -11,9 +13,17 @@ import { ActivatedRoute } from '@angular/router';
 export class ProductListComponent implements OnInit {
 
   products: Product[] = [];
+  productListResponse: ProductListResponse[] = [];
   currentCategoryId: number = 1;
+  previousCategoryId: number = 1;
   currentCategoryName: string = "";
   searchMode: boolean = false;
+
+  //pagination properties
+  thePageNumber: number = 1;
+  thePageSize: number = 1;
+  theTotalElements: number = 1;
+  
 
   constructor(private productService: ProductService,
     private route: ActivatedRoute) { }
@@ -35,8 +45,9 @@ export class ProductListComponent implements OnInit {
     }
       
   }
+
   
-  handleListProducts() {
+    handleListProducts() {
     // check if "id" parameter is available
     const hasCategoryId: boolean = this.route.snapshot.paramMap.has('id');
 
@@ -53,12 +64,50 @@ export class ProductListComponent implements OnInit {
       this.currentCategoryName = 'Books';
     }
 
-    // now get the products for the given category id
-    this.productService.getProductList(this.currentCategoryId).subscribe(
-      data => {
-        this.products = data;
-      }
-    )
+    if(this.previousCategoryId != this.currentCategoryId){
+      this.thePageNumber = 1;
+    }
+
+    this.previousCategoryId = this.currentCategoryId;
+
+    console.log(`currentCategoryId: ${this.currentCategoryId}, thePageNumber: ${this.thePageNumber}, thePageSize: ${this.thePageSize}`);
+
+    const productListRequest = new ProductListRequest(this.currentCategoryId, 
+      this.thePageNumber - 1, this.thePageSize);
+
+    console.log(`id: ${productListRequest.id}, pageNumber: ${productListRequest.page}, pageSize: ${productListRequest.size}` )
+
+      
+                      // now get the products for the given category id
+                      //this.productService.getProductListPaginate(this.thePageNumber - 1,
+                      //  this.thePageSize,
+                      //  this.currentCategoryId)
+                       // .subscribe(
+                       // data => {
+                       //   this.products = data._embedded.products;
+                       //   this.thePageNumber = data.page.number + 1;
+                       //   this.thePageSize = data.page.size;
+                        //  this.theTotalElements = data.page.totalElements;
+                       // }                                     
+                       // );
+
+                     // this.productService.getProductListPaginate(this.thePageNumber - 1,
+                      //  this.thePageSize,
+                      //  this.currentCategoryId)
+                      //  .subscribe(
+                     //    data => {
+                      //     this.products = data._embedded.products;
+                       //    this.thePageNumber = data.page.number + 1;
+                       //    this.thePageSize = data.page.size;
+                       //    this.theTotalElements = data.page.totalElements;
+                      //   }                                     
+                      //  );
+
+    this.productService.productListPaginated(productListRequest).subscribe(
+        data => {
+          this.productListResponse = data;
+        }
+    )               
   }
 
   handleSearchProducts() {

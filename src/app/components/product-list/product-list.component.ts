@@ -19,11 +19,13 @@ export class ProductListComponent implements OnInit {
   currentCategoryName: string = "";
   searchMode: boolean = false;
 
+
   //pagination properties
   thePageNumber: number = 1;
   thePageSize: number = 1;
   theTotalElements: number = 1;
   
+
 
   constructor(private productService: ProductService,
     private route: ActivatedRoute) { }
@@ -64,11 +66,14 @@ export class ProductListComponent implements OnInit {
       this.currentCategoryName = 'Books';
     }
 
+
+
     if(this.previousCategoryId != this.currentCategoryId){
       this.thePageNumber = 1;
     }
 
     this.previousCategoryId = this.currentCategoryId;
+
 
     console.log(`currentCategoryId: ${this.currentCategoryId}, thePageNumber: ${this.thePageNumber}, thePageSize: ${this.thePageSize}`);
 
@@ -108,6 +113,7 @@ export class ProductListComponent implements OnInit {
           this.productListResponse = data;
         }
     )               
+
   }
 
   handleSearchProducts() {

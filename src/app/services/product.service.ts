@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Product } from '../common/product';
 import { ProductCategory } from '../common/product-category';
+import { ProductListRequest } from '../request/product-list-request';
+import { ProductListResponse } from '../response/product-list-response';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +13,9 @@ export class ProductService {
   
 
   //the base url of our API in backend. 
-  private  baseUrl = 'http://localhost:8080/api/products';
+  private baseUrl = 'http://localhost:8080/api/products/';
   private categoryUrl = 'http://localhost:8080/api/product-category';
+  private baseUrl2 = 'http://localhost:8080/product/productById';
 
  
 
@@ -52,12 +55,30 @@ export class ProductService {
       return this.getProducts(searchUrl)
   }
 
+
+  getProductListPaginate(thePage: number, 
+                         thePageSize: number, 
+                         theCategoryId: number): Observable<GetResponseProducts> {
+
+    // need to build URL based on category id, page and size 
+    const searchUrl = `${this.baseUrl}search/findByCategoryId?id=${theCategoryId}`
+                    + `&page=${thePage}&size=${thePageSize}`;
+
+    return this.httpClient.get<GetResponseProducts>(searchUrl);
+  }
+
+  
+
+  productListPaginated(request: ProductListRequest): Observable<ProductListResponse[]>{
+     return this.httpClient.post<ProductListResponse[]>(this.baseUrl2, request);
+
   getProduct(theProductId: number) {
 
     //need to build URL based on product id
     const productUrl = `${this.baseUrl}/${theProductId}`;
     
     return this.httpClient.get<Product>(productUrl);
+
   }
 
 
@@ -67,11 +88,15 @@ export class ProductService {
       map(response => response._embedded.products)
     );
   }
+
+
+
+
 }
 
 //method to unwrap JSON from SpringBoot DATA REST 
-interface GetResponseProducts{
-  _embedded:{
+interface GetResponseProducts {
+  _embedded: {
     products: Product[];
   },
   page: {
@@ -79,6 +104,14 @@ interface GetResponseProducts{
     totalElements: number,
     totalPages: number,
     number: number
+
+  }
+}
+
+interface GetResponseProductsRequest{
+  _embedded: {
+    productsList: ProductListResponse[];
+
   }
 }
 

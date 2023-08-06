@@ -56,29 +56,11 @@ export class ProductService {
   }
 
 
-  getProductListPaginate(thePage: number, 
-                         thePageSize: number, 
-                         theCategoryId: number): Observable<GetResponseProducts> {
-
-    // need to build URL based on category id, page and size 
-    const searchUrl = `${this.baseUrl}search/findByCategoryId?id=${theCategoryId}`
-                    + `&page=${thePage}&size=${thePageSize}`;
-
-    return this.httpClient.get<GetResponseProducts>(searchUrl);
-  }
 
   
 
   productListPaginated(request: ProductListRequest): Observable<ProductListResponse[]>{
      return this.httpClient.post<ProductListResponse[]>(this.baseUrl2, request);
-
-  getProduct(theProductId: number) {
-
-    //need to build URL based on product id
-    const productUrl = `${this.baseUrl}/${theProductId}`;
-    
-    return this.httpClient.get<Product>(productUrl);
-
   }
 
 
@@ -88,10 +70,6 @@ export class ProductService {
       map(response => response._embedded.products)
     );
   }
-
-
-
-
 }
 
 //method to unwrap JSON from SpringBoot DATA REST 

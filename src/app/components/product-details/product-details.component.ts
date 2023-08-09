@@ -1,16 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Product } from 'src/app/common/product';
+import { ProductListResponse } from 'src/app/response/product-list-response';
 import { ProductService } from 'src/app/services/product.service';
+
+import { CurrencyPipe } from '@angular/common';
+
+
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css']
 })
+
 export class ProductDetailsComponent implements OnInit {
 
-  product!: Product;
+  product!: ProductListResponse;
 
   constructor(private productService: ProductService,
               private route: ActivatedRoute) { }

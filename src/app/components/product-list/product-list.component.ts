@@ -12,6 +12,7 @@ import { ProductListResponse } from 'src/app/response/product-list-response';
 })
 export class ProductListComponent implements OnInit {
 
+  
   products: Product[] = [];
   productListResponse: ProductListResponse[] = [];
   currentCategoryId: number = 1;
@@ -82,32 +83,7 @@ export class ProductListComponent implements OnInit {
 
     console.log(`id: ${productListRequest.id}, pageNumber: ${productListRequest.page}, pageSize: ${productListRequest.size}` )
 
-      
-                      // now get the products for the given category id
-                      //this.productService.getProductListPaginate(this.thePageNumber - 1,
-                      //  this.thePageSize,
-                      //  this.currentCategoryId)
-                       // .subscribe(
-                       // data => {
-                       //   this.products = data._embedded.products;
-                       //   this.thePageNumber = data.page.number + 1;
-                       //   this.thePageSize = data.page.size;
-                        //  this.theTotalElements = data.page.totalElements;
-                       // }                                     
-                       // );
-
-                     // this.productService.getProductListPaginate(this.thePageNumber - 1,
-                      //  this.thePageSize,
-                      //  this.currentCategoryId)
-                      //  .subscribe(
-                     //    data => {
-                      //     this.products = data._embedded.products;
-                       //    this.thePageNumber = data.page.number + 1;
-                       //    this.thePageSize = data.page.size;
-                       //    this.theTotalElements = data.page.totalElements;
-                      //   }                                     
-                      //  );
-
+  
     this.productService.productListPaginated(productListRequest).subscribe(
         data => {
           this.productListResponse = data;
@@ -122,11 +98,11 @@ export class ProductListComponent implements OnInit {
     //search for the product using keyword
     this.productService.searchProducts(keyWord).subscribe(
       data => {
-        this.products = data;
+        this.productListResponse = data;
       }
     );
-
-
   }
+
+  
 
 }

@@ -4,6 +4,7 @@ export class ProductListResponse {
                 public imageUrl: String,
                 public name: String,
                 public unitPrice: number,
+                public description: String
                 ) {                   
                 }
 

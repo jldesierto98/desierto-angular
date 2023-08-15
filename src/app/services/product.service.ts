@@ -67,9 +67,7 @@ export class ProductService {
   }
 
   getProduct(theProductId: number): Observable<ProductListResponse> {
-    return this.httpClient.get<GetProductMasterViewResponse>(this.baseUrl3).pipe(
-      map(response => response._embedded.productMasterView)
-    )
+    return this.httpClient.get<ProductListResponse>(`${this.baseUrl3}${theProductId}`);
   }
 }
 
@@ -101,7 +99,5 @@ interface GetResponseProductCategory {
 }
 
 interface GetProductMasterViewResponse {
-  _embedded: {
     productMasterView: ProductListResponse;
-  }
 }

@@ -5,6 +5,7 @@ import { Product } from '../common/product';
 import { ProductCategory } from '../common/product-category';
 import { ProductListRequest } from '../request/product-list-request';
 import { ProductListResponse } from '../response/product-list-response';
+import { ProductSearchRequest } from '../request/product-search-request';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class ProductService {
   private categoryUrl = 'http://localhost:8080/api/product-category';
   private baseUrl2 = 'http://localhost:8080/product/productById';
   private baseUrl3 = 'http://localhost:8080/product/';
+  private searchByKeywordPaginatedUrl = 'http://localhost:8080/product/search';
 
   //inject HttpClient
   constructor(private httpClient: HttpClient) { }
@@ -53,6 +55,10 @@ export class ProductService {
 
   productListPaginated(request: ProductListRequest): Observable<ProductListResponse[]> {
     return this.httpClient.post<ProductListResponse[]>(this.baseUrl2, request);
+  }
+
+  productSearchListPaginated(request: ProductSearchRequest): Observable<ProductListResponse[]> {
+    return this.httpClient.post<ProductListResponse[]>(this.searchByKeywordPaginatedUrl, request);
   }
 
 

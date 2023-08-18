@@ -4,6 +4,7 @@ import { Product } from 'src/app/common/product';
 import { ActivatedRoute } from '@angular/router';
 import { ProductListRequest } from 'src/app/request/product-list-request';
 import { ProductListResponse } from 'src/app/response/product-list-response';
+import { ProductSearchRequest } from 'src/app/request/product-search-request';
 
 @Component({
   selector: 'app-product-list',
@@ -19,11 +20,12 @@ export class ProductListComponent implements OnInit {
   previousCategoryId: number = 1;
   currentCategoryName: string = "";
   searchMode: boolean = false;
+  previousKeyword: string = "";
 
 
   //pagination properties
   thePageNumber: number = 1;
-  thePageSize: number = 10;
+  thePageSize: number = 5;
   theTotalElements: number = 40;
   
 
@@ -95,12 +97,30 @@ export class ProductListComponent implements OnInit {
   handleSearchProducts() {
     const keyWord: string = this.route.snapshot.paramMap.get('keyword')!;
 
+    if(this.previousKeyword != keyWord){
+      this.thePageNumber = 1;
+    }
+
+    this.previousKeyword = keyWord;
+    console.log(`keyword=${keyWord}, thePageNumber=${this.thePageNumber}`);
+
+    var productListRequest  = new ProductSearchRequest(keyWord, 
+                                                      this.thePageNumber-1, 
+                                                      this.thePageSize);
+
+    
     //search for the product using keyword
-    this.productService.searchProducts(keyWord).subscribe(
+    this.productService.productSearchListPaginated(productListRequest).subscribe(
       data => {
         this.productListResponse = data;
       }
     );
+  }
+
+  updatePageSize(pageSize: String){
+      this.thePageSize = +pageSize;
+      this.thePageNumber = 1;
+      this.listProducts();
   }
 
   

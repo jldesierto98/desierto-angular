@@ -1,10 +1,10 @@
 <div class="main-content">
     <div class="section-content section-content-p30">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row product-row">
 
                 <!-- loop over the collection of products -->
-                <div *ngFor="let tempProduct of productListResponse" class="col-md-3">
+                <div *ngFor="let tempProduct of productListResponse" class="col-md-3 product-column">
 
                     <div class="product-box">
 
@@ -17,7 +17,7 @@
                         </a>
                         
                         <div class="price">{{ tempProduct.unitPrice | currency:'USD' }}</div>
-                        <a href="#" class="primary-btn">Add to cart</a>
+                        <button (click)="addToCart(tempProduct)" class= "btn btn-primary btn-sm">Add to cart</button>
                     </div>
 
                 </div>
@@ -30,44 +30,31 @@
             </div>
 
             <!-- begin footer -->
-        <div class="footer-pagination">
-            <div class="row">
-                <div class="col-md-9">
-                    <ngb-pagination [(page)]="thePageNumber"
-                                    [pageSize]="thePageSize"
-                                    [collectionSize]="theTotalElements"
-                                    [maxSize]="5"
-                                    [boundaryLinks]="true"
-                                    (pageChange)="listProducts()">
-                    </ngb-pagination>
-                </div>
+            <div class="footer-pagination">
+                <div class="row align-items-center">
+                    <div class="col-md-9">
+                        <ngb-pagination [(page)]="thePageNumber"
+                                        [pageSize]="thePageSize"
+                                        [collectionSize]="theTotalElements"
+                                        [maxSize]="5"
+                                        [boundaryLinks]="true"
+                                        (pageChange)="listProducts()">
+                        </ngb-pagination>
+                    </div>
 
-                <div class="col-md-3 mt-2" style="text-align: right;">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <span class="mr-2">Page Size</span>
-                        </div>
-                        <div class="col-md-4">
-                            <select #myPageSelect (change)="updatePageSize(myPageSelect.value)">
-                                <option selected="true">5</option>
-                                <option>10</option>
-                                <option>20</option>
-                                <option>50</option>
-                            </select>
-                        </div>
+                    <div class="col-md-3 mt-2" style="text-align: right;">
+                        <span class="mr-2">Page Size</span>
+                        <select #myPageSelect (change)="updatePageSize(myPageSelect.value)">
+                            <option selected="true">5</option>
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                        </select>
                     </div>
                 </div>
             </div>
-        </div>
-<!-- end footer -->
-
+            <!-- end footer -->
 
         </div>
     </div>
 </div>
-
-
-
-
-
-

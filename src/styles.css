@@ -1038,4 +1038,51 @@ footer ul li{
         border:0;
         padding:8px 0
     }
+
+    .product-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin: -10px; /* Adjust this value to control spacing between product boxes */
+    }
+    
+    .product-column {
+        flex: 0 0 calc(25% - 20px); /* Adjust this value for the desired width of product columns */
+        margin: 10px;
+        box-sizing: border-box;
+    }
+    
+    .product-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+        box-sizing: border-box;
+    }
+    
+    .product-box img {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    .price {
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    
+    .primary-btn {
+        display: block;
+        margin-top: 10px;
+        background-color: #3498db;
+        color: #fff;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .primary-btn:hover {
+        background-color: #2980b9;
+    }
+    
 }

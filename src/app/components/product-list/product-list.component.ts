@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductListRequest } from 'src/app/request/product-list-request';
 import { ProductListResponse } from 'src/app/response/product-list-response';
 import { ProductSearchRequest } from 'src/app/request/product-search-request';
+import { AddToCartService } from 'src/app/services/add-to-cart-service.service';
 
 @Component({
   selector: 'app-product-list',
@@ -13,7 +14,7 @@ import { ProductSearchRequest } from 'src/app/request/product-search-request';
 })
 export class ProductListComponent implements OnInit {
 
-  
+
   products: Product[] = [];
   productListResponse: ProductListResponse[] = [];
   currentCategoryId: number = 1;
@@ -27,11 +28,12 @@ export class ProductListComponent implements OnInit {
   thePageNumber: number = 1;
   thePageSize: number = 5;
   theTotalElements: number = 40;
-  
+
 
 
   constructor(private productService: ProductService,
-    private route: ActivatedRoute) { }
+              private cartService: AddToCartService,
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(() => {
@@ -42,17 +44,17 @@ export class ProductListComponent implements OnInit {
   listProducts() {
     this.searchMode = this.route.snapshot.paramMap.has('keyword');
 
-    if(this.searchMode){
+    if (this.searchMode) {
       this.handleSearchProducts();
     }
-    else{
+    else {
       this.handleListProducts();
     }
-      
+
   }
 
-  
-    handleListProducts() {
+
+  handleListProducts() {
     // check if "id" parameter is available
     const hasCategoryId: boolean = this.route.snapshot.paramMap.has('id');
 
@@ -71,7 +73,7 @@ export class ProductListComponent implements OnInit {
 
 
 
-    if(this.previousCategoryId != this.currentCategoryId){
+    if (this.previousCategoryId != this.currentCategoryId) {
       this.thePageNumber = 1;
     }
 
@@ -80,35 +82,35 @@ export class ProductListComponent implements OnInit {
 
     console.log(`currentCategoryId: ${this.currentCategoryId}, thePageNumber: ${this.thePageNumber}, thePageSize: ${this.thePageSize}`);
 
-    const productListRequest = new ProductListRequest(this.currentCategoryId, 
+    const productListRequest = new ProductListRequest(this.currentCategoryId,
       this.thePageNumber - 1, this.thePageSize);
 
-    console.log(`id: ${productListRequest.id}, pageNumber: ${productListRequest.page}, pageSize: ${productListRequest.size}` )
+    console.log(`id: ${productListRequest.id}, pageNumber: ${productListRequest.page}, pageSize: ${productListRequest.size}`)
 
-  
+
     this.productService.productListPaginated(productListRequest).subscribe(
-        data => {
-          this.productListResponse = data;
-        }
-    )               
+      data => {
+        this.productListResponse = data;
+      }
+    )
 
   }
 
   handleSearchProducts() {
     const keyWord: string = this.route.snapshot.paramMap.get('keyword')!;
 
-    if(this.previousKeyword != keyWord){
+    if (this.previousKeyword != keyWord) {
       this.thePageNumber = 1;
     }
 
     this.previousKeyword = keyWord;
     console.log(`keyword=${keyWord}, thePageNumber=${this.thePageNumber}`);
 
-    var productListRequest  = new ProductSearchRequest(keyWord, 
-                                                      this.thePageNumber-1, 
-                                                      this.thePageSize);
+    var productListRequest = new ProductSearchRequest(keyWord,
+      this.thePageNumber - 1,
+      this.thePageSize);
 
-    
+
     //search for the product using keyword
     this.productService.productSearchListPaginated(productListRequest).subscribe(
       data => {
@@ -117,12 +119,18 @@ export class ProductListComponent implements OnInit {
     );
   }
 
-  updatePageSize(pageSize: String){
-      this.thePageSize = +pageSize;
-      this.thePageNumber = 1;
-      this.listProducts();
+  updatePageSize(pageSize: String) {
+    this.thePageSize = +pageSize;
+    this.thePageNumber = 1;
+    this.listProducts();
   }
 
-  
+  addToCart(product: ProductListResponse) {
+    this.cartService.addToCart(product.id).subscribe(response => {
+      this.cartService.updateTotals(response);
+    });
+  }
+
+
 
 }

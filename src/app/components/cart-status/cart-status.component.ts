@@ -16,8 +16,6 @@ export class CartStatusComponent implements OnInit {
   constructor(private cartService: AddToCartService) { }
 
   ngOnInit(): void {
-
-   
     
     // Subscribe to the totalPrice and totalQuantity subjects
     this.cartService.totalPrice.subscribe(price => {

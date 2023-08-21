@@ -3,8 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductListResponse } from 'src/app/response/product-list-response';
 import { ProductService } from 'src/app/services/product.service';
 
-import { CurrencyPipe } from '@angular/common';
-
 
 
 @Component({

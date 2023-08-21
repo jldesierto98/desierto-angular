@@ -6,6 +6,7 @@ import { ProductListRequest } from 'src/app/request/product-list-request';
 import { ProductListResponse } from 'src/app/response/product-list-response';
 import { ProductSearchRequest } from 'src/app/request/product-search-request';
 import { AddToCartService } from 'src/app/services/add-to-cart-service.service';
+import { ProductInCart } from 'src/app/common/product-in-cart';
 
 @Component({
   selector: 'app-product-list',
@@ -126,6 +127,7 @@ export class ProductListComponent implements OnInit {
   }
 
   addToCart(product: ProductListResponse) {
+  
     this.cartService.addToCart(product.id).subscribe(response => {
       this.cartService.updateTotals(response);
     });

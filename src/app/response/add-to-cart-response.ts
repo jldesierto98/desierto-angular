@@ -1,6 +1,6 @@
 import { Product } from "../common/product";
 
-export class AddToCartResponse {
+export class  AddToCartResponse {
 
     constructor(public totalPrice: number,
                 public totalQuantity: number,

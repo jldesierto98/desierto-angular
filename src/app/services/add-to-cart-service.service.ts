@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { AddToCartResponse } from '../response/add-to-cart-response';
 import { HttpClient } from '@angular/common/http';
+import { ProductInCart } from '../common/product-in-cart';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +17,11 @@ export class AddToCartService {
 
   constructor(private httpClient: HttpClient) { }
 
-  addToCart(productId: number): Observable<AddToCartResponse>{
-      return this.httpClient.post<AddToCartResponse>(`${this.addToCartUrl}${productId}`, productId);
+  addToCart(productId: number): Observable<ProductInCart>{
+      return this.httpClient.post<ProductInCart>(`${this.addToCartUrl}${productId}`, productId);
   }
 
-  updateTotals(response: AddToCartResponse) {
+   updateTotals(response: ProductInCart) {
     this.totalPrice.next(response.totalPrice);
     this.totalQuantity.next(response.totalQuantity);
     

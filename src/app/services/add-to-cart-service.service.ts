@@ -3,6 +3,8 @@ import { Observable, Subject } from 'rxjs';
 import { AddToCartResponse } from '../response/add-to-cart-response';
 import { HttpClient } from '@angular/common/http';
 import { ProductInCart } from '../common/product-in-cart';
+import { Product } from '../common/product';
+import { CartItem } from '../common/cart-item';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +14,7 @@ export class AddToCartService {
   private addToCartUrl = 'http://localhost:8080/product/';
   totalPrice: Subject<number> = new Subject<number>();
   totalQuantity: Subject<number> = new Subject<number>();
+  products: CartItem[] = [];
 
 
 
@@ -24,9 +27,11 @@ export class AddToCartService {
    updateTotals(response: ProductInCart) {
     this.totalPrice.next(response.totalPrice);
     this.totalQuantity.next(response.totalQuantity);
-    
-    console.log(`TOTAL PRICE : ${response.totalPrice} || TOTAL QUANTITY : ${response.totalQuantity}`);
+    this.products = response.products;
+    console.log(`TOTAL PRICE : ${response.totalPrice} || TOTAL QUANTITY : ${response.totalQuantity} || CART ITEMS : ${JSON.stringify(response.products)}`);
   }
+
+  
 
   
 }

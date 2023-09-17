@@ -14,11 +14,14 @@ export class AddToCartService {
   private addToCartUrl = 'http://localhost:8080/product/';
   totalPrice: Subject<number> = new Subject<number>();
   totalQuantity: Subject<number> = new Subject<number>();
-  products: CartItem[] = [];
+  productInCart!: ProductInCart;
+  initialQuantity: number = 0;
 
 
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {
+    this.totalQuantity.next(0);
+   }
 
   addToCart(productId: number): Observable<ProductInCart>{
       return this.httpClient.post<ProductInCart>(`${this.addToCartUrl}${productId}`, productId);
@@ -27,11 +30,8 @@ export class AddToCartService {
    updateTotals(response: ProductInCart) {
     this.totalPrice.next(response.totalPrice);
     this.totalQuantity.next(response.totalQuantity);
-    this.products = response.products;
-    console.log(`TOTAL PRICE : ${response.totalPrice} || TOTAL QUANTITY : ${response.totalQuantity} || CART ITEMS : ${JSON.stringify(response.products)}`);
+    this.productInCart = response;
   }
-
-  
 
   
 }

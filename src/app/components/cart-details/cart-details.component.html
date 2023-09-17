@@ -1,44 +1,55 @@
-<div class="main-content">
-    <div class="section-content section-content-p30">
-        <div class="container-fluid">
-            <table class="table table-bordered">
-                <tr>
-                    <th width="20%"> Product Image </th>
-                    <th width="50%"> Product Details </th>
-                    <th width="30%"></th>
-                </tr>
+    <div class="main-content">
+        <div class="section-content section-content-p30">
+            <div class="container-fluid">
+            
+            <div *ngIf="initialQuantity > 0">
 
-                <tr *ngFor="let tempProductInCart of productInCart">
-                  <td>
-                        <img src="{{ tempProductInCart.imageUrl }}" class="img-responsive" width="150px" />
-                  </td>
+                <table class="table table-bordered">
+                    <tr>
+                        <th width="20%"> Product Image </th>
+                        <th width="50%"> Product Details </th>
+                        <th width="30%"></th>
+                    </tr>
 
-                  <td>
-                    <p>{{ tempProductInCart.name}}</p>
-                    <p>{{ tempProductInCart.unitPrice | currency: 'PHP'}}</p>
-                  </td>
-
-                  <td>
-                    <div class="items">
-                        <label>Quantity:</label> {{ tempProductInCart.quantityInCart }}
-                    </div>
-
-                    <p class="mt-2">SubTotal: {{ tempProductInCart.subTotalPrice | currency: 'PHP' }}</p>
-                  </td>
-
-                </tr>
-
-                <tr>
-                    <td colspan="2"></td>
-                    <td style="font-weight: bold">
-                        <p> Total Quantity: {{ totalQuantity }} </p>
-                        <p>Shipping: FREE</p>
-                        <p>Total Price: {{ totalPrice | currency: 'PHP' }}</p>
+                    <tr *ngFor="let tempProductInCart of productInCart.products">
+                    <td>
+                            <img src="{{ tempProductInCart.imageUrl }}" class="img-responsive" width="150px" />
                     </td>
-                </tr>
 
-            </table>
+                    <td>
+                        <p>{{ tempProductInCart.name}}</p>
+                        <p>{{ tempProductInCart.unitPrice | currency: 'PHP'}}</p>
+                    </td>
+
+                    <td>
+                        <div class="items">
+                            <label>Quantity:</label> {{ tempProductInCart.quantityInCart }}
+                        </div>
+
+                        <p class="mt-2">SubTotal: {{ tempProductInCart.subTotalPrice | currency: 'PHP' }}</p>
+                    </td>
+
+                    </tr>
+
+                    <tr>
+                        <td colspan="2"></td>
+                        <td style="font-weight: bold">
+                            <p> Total Quantity: {{ totalQuantity }} </p>
+                            <p>Shipping: FREE</p>
+                            <p>Total Price: {{ totalPrice | currency: 'PHP' }}</p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+            
+            <div *ngIf="initialQuantity == 0" class="alert alert-warning col-md-12" role="alert">
+                Your cart is empty.
+            </div>  
+            
+            </div>
         </div>
     </div>
-</div>
+
 

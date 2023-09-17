@@ -12,6 +12,7 @@ export class CartStatusComponent implements OnInit {
   
   totalPrice: number = 0.0;
   totalQuantity: number = 0;
+  initalQuantity: number = 0;
 
   constructor(private cartService: AddToCartService) { }
 
@@ -20,14 +21,20 @@ export class CartStatusComponent implements OnInit {
     // Subscribe to the totalPrice and totalQuantity subjects
     this.cartService.totalPrice.subscribe(price => {
       this.totalPrice = price;
-    });
+      console.log(`totalPriceCartService2 : ${price}`);
+    }); 
 
     this.cartService.totalQuantity.subscribe(quantity => {
       this.totalQuantity = quantity;
     });
 
-    console.log(`TOTAL PRICE : ${this.totalPrice} || TOTAL QUANTITY : ${this.totalQuantity}`);
+    this.initalQuantity = 0;
+
+    console.log(`==TotalPrice:${this.totalPrice}||totalQuantity:${this.totalQuantity}`);
+
+
   }
+
 
 
 

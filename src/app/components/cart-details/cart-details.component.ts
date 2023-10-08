@@ -35,7 +35,6 @@ export class CartDetailsComponent implements OnInit {
       }
     } else {
       // Handle the case where this.cartService.productInCart is undefined.
-     // Create a new empty ProductInCart or handle it accordingly.
       this.cartService.totalPrice.subscribe(price => {
         this.totalPrice = price;
       });
@@ -47,11 +46,45 @@ export class CartDetailsComponent implements OnInit {
 
     }
 
-  
-   
-
 
     console.log(`====xXTotalPrice:${this.totalPrice}=======||===TotalQuantity:${this.totalQuantity}========`);
+  }
+
+  incrementQuantity(theCartItem : CartItem){
+
+    console.log(`INCREMENT ITEM ==== ${theCartItem.id}`);
+
+    theCartItem.quantityInCart++;
+    
+    
+    this.cartService.totalQuantity.subscribe(quantity => {
+      this.totalQuantity = quantity;
+    });
+
+    this.cartService.totalPrice.subscribe(price => {
+      this.totalPrice = price;
+    });
+
+
+    this.cartService.addToCart(theCartItem.id).subscribe(response => {
+      this.cartService.updateTotals(response);
+    });
+
+    theCartItem.subTotalPrice = theCartItem.unitPrice * theCartItem.quantityInCart;
+
+  }
+
+  decrementQuantity(theCartItem : CartItem){
+
+    theCartItem.quantityInCart--;
+
+    this.cartService.decrementQuantity(theCartItem.id).subscribe(response =>{
+      this.cartService.updateTotals(response);
+    })
+
+    theCartItem.subTotalPrice = theCartItem.unitPrice * theCartItem.quantityInCart;
+    
+
   }
 
 }

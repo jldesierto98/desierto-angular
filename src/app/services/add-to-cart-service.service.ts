@@ -12,6 +12,7 @@ import { CartItem } from '../common/cart-item';
 export class AddToCartService {
 
   private addToCartUrl = 'http://localhost:8080/product/';
+  private decrement = 'decrement/';
   totalPrice: Subject<number> = new Subject<number>();
   totalQuantity: Subject<number> = new Subject<number>();
   productInCart!: ProductInCart;
@@ -23,15 +24,21 @@ export class AddToCartService {
     this.totalQuantity.next(0);
    }
 
-  addToCart(productId: number): Observable<ProductInCart>{
+  addToCart(productId : number): Observable<ProductInCart>{
       return this.httpClient.post<ProductInCart>(`${this.addToCartUrl}${productId}`, productId);
   }
 
-   updateTotals(response: ProductInCart) {
+  decrementQuantity(productId : number): Observable<ProductInCart>{
+     return this.httpClient.post<ProductInCart>(`${this.addToCartUrl}${this.decrement}${productId}`, productId);
+  }
+
+  updateTotals(response: ProductInCart) {
     this.totalPrice.next(response.totalPrice);
     this.totalQuantity.next(response.totalQuantity);
     this.productInCart = response;
   }
+
+
 
   
 }

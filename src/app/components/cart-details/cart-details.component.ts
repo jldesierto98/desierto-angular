@@ -47,6 +47,7 @@ export class CartDetailsComponent implements OnInit {
     }
 
 
+
     console.log(`====xXTotalPrice:${this.totalPrice}=======||===TotalQuantity:${this.totalQuantity}========`);
   }
 
@@ -80,12 +81,43 @@ export class CartDetailsComponent implements OnInit {
 
     this.cartService.decrementQuantity(theCartItem.id).subscribe(response =>{
       this.cartService.updateTotals(response);
+      this.productInCart = response;
     })
 
-    theCartItem.subTotalPrice = theCartItem.unitPrice * theCartItem.quantityInCart;
+    this.cartService.totalQuantity.subscribe(quantity => {
+      this.totalQuantity = quantity;
+    });
+
+    this.cartService.totalPrice.subscribe(price => {
+      this.totalPrice = price;
+    });
+
+
     
+    theCartItem.subTotalPrice = theCartItem.unitPrice * theCartItem.quantityInCart;
+    theCartItem.quantityInCart = theCartItem.quantityInCart;
 
   }
+
+  removeItem(theCartItem : CartItem){
+    
+    this.cartService.removeItem(theCartItem.id).subscribe(response =>{
+      this.cartService.updateTotals(response);
+      this.productInCart = response;
+    })
+
+    this.cartService.totalQuantity.subscribe(quantity => {
+      this.totalQuantity = quantity;
+    });
+
+    this.cartService.totalPrice.subscribe(price => {
+      this.totalPrice = price;
+    });
+
+
+  }
+
+  
 
 }
 

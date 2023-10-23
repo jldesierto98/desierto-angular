@@ -46,7 +46,7 @@
                             </div>
 
                         </div>
-
+                               <button (click)="removeItem(tempProductInCart)" class="btn btn-primary btn-sm mt-2" style="background-color: red;">Remove</button>
                         <p class="mt-2">SubTotal: {{ tempProductInCart.subTotalPrice | currency: 'PHP' }}</p>
                     </td>
 
@@ -58,6 +58,7 @@
                             <p> Total Quantity: {{ totalQuantity }} </p>
                             <p>Shipping: FREE</p>
                             <p>Total Price: {{ totalPrice | currency: 'PHP' }}</p>
+                            <a routerLink="/checkout" class="btn btn-primary">Checkout</a>
                         </td>
                     </tr>
 
@@ -65,7 +66,7 @@
 
             </div>
             
-            <div *ngIf="initialQuantity == 0" class="alert alert-warning col-md-12" role="alert">
+            <div *ngIf="totalQuantity == 0" class="alert alert-warning col-md-12" role="alert">
                 Your cart is empty.
             </div>  
             

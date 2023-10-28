@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 import { Country } from '../common/country';
 import { HttpClient } from '@angular/common/http';
+import { State } from '../common/state';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,8 @@ import { HttpClient } from '@angular/common/http';
 export class FormActionService {
 
   private getCountriesUrl = 'http://localhost:8080/country/all';
+  private getStatesUrl = 'http://localhost:8080/state/all';
+  private getStatesByCountryIdUrl = 'http://localhost:8080/state/';
 
   constructor(private httpClient: HttpClient) { }
 
@@ -39,17 +42,31 @@ export class FormActionService {
 
   getCountries(): Observable<Country[]>{
     
-    return this.httpClient.get<GetResponseCountries>(this.getCountriesUrl).pipe(
-      map(response => response._embedded.countries)
+    return this.httpClient.get<Country[]>(this.getCountriesUrl);
+
+  }
+
+  getStates(): Observable<State[]> {
+
+    return this.httpClient.get<GetResponseStates>(this.getStatesUrl).pipe(
+      map(response => response._embedded.states)
     );
 
+  }
+
+  getStateByCountryId(countryId: number): Observable<State[]> {
+    return this.httpClient.post<State[]>(`${this.getStatesByCountryIdUrl}${countryId}`, countryId);
   }
 
 
 }
 
 interface GetResponseCountries {
-  _embedded: {
     countries: Country[];
+}
+
+interface GetResponseStates {
+  _embedded: {
+    states: State[];
   }
 }

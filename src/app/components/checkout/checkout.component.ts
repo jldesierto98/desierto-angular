@@ -6,6 +6,13 @@ import { ProductInCart } from 'src/app/common/product-in-cart';
 import { AddToCartService } from 'src/app/services/add-to-cart-service.service';
 import { FormActionService } from 'src/app/services/form-action.service';
 import { ValidatorsUtils } from 'src/app/validators/validators-utils';
+import { CheckoutServiceService } from 'src/app/services/checkout-service.service';
+import { Router } from '@angular/router';
+import { Order } from 'src/app/common/order';
+import { CartItem } from 'src/app/common/cart-item';
+import { OrderItem } from 'src/app/common/order-item';
+import { Purchase } from 'src/app/common/purchase';
+import { Customer } from 'src/app/common/customer';
 
 @Component({
   selector: 'app-checkout',
@@ -16,7 +23,7 @@ export class CheckoutComponent implements OnInit {
 
   checkoutFormGroup!: FormGroup;
   totalQuantity: number = 0;
-  productInCart!: ProductInCart;
+  // productInCart!: ProductInCart;
   totalPrice: number = 0;
   theMonths: number[] = [];
   theYears: number[] = [];
@@ -25,7 +32,9 @@ export class CheckoutComponent implements OnInit {
   theStatesBilling: State[] = [];
   constructor(private formBuilder: FormBuilder,
     private cartService: AddToCartService,
-    private formActionService: FormActionService) { }
+    private formActionService: FormActionService,
+    private checkOutService: CheckoutServiceService,
+    private router: Router) { }
 
   ngOnInit(): void {
 
@@ -50,40 +59,19 @@ export class CheckoutComponent implements OnInit {
         zipcode:['', [Validators.required]]
       }),
       creditCard: this.formBuilder.group({
-        cardType: [''],
-        nameOnCard: [''],
-        state: [''],
-        cardNumber: [''],
-        securityCode: [''],
+        cardType: ['', [Validators.required]],
+        nameOnCard: ['', [Validators.required, Validators.minLength(2), ValidatorsUtils.notOnlyWhitespace]],
+        cardNumber: ['', [Validators.required, Validators.pattern('[0-9]{16}')]],
+        securityCode: ['', [Validators.required, Validators.pattern('[0-9]{3}')]],
         expirationMonth: [''],
         expirationYear: ['']
       })
 
     });
 
-    if (this.cartService.productInCart) {
-      this.productInCart = this.cartService.productInCart;
-  
-      if (this.productInCart.totalPrice == undefined && this.productInCart.totalQuantity == undefined) {
-        this.totalPrice = 0;
-        this.totalQuantity = 0;
-      } else {
-        this.totalPrice = this.productInCart.totalPrice || 0; // Use default value if undefined
-        this.totalQuantity = this.productInCart.totalQuantity || 0; // Use default value if undefined
-    
-      }
-    } else {
-      // Handle the case where this.cartService.productInCart is undefined.
-      this.cartService.totalPrice.subscribe(price => {
-        this.totalPrice = price;
-      });
-
-      this.cartService.totalQuantity.subscribe(quantity => {
-        this.totalQuantity = quantity;
-      });
-
-
-    }
+   
+    //update review cart
+    this.reviewCartStatus();
 
     console.log(`CHECKOUT COMP QUANTITY =======> ${this.totalQuantity}`);
 
@@ -110,14 +98,88 @@ export class CheckoutComponent implements OnInit {
 
   }  
 
+  reviewCartStatus() {
+
+    this.cartService.totalPrice.subscribe(
+      totalPrice => this.totalPrice = totalPrice
+    );
+
+    this.cartService.totalQuantity.subscribe(
+      totalQuantity => this.totalQuantity = totalQuantity
+    );
+
+  }
+
+
+
   onSubmit() {
+
     if(this.checkoutFormGroup.invalid){
       this.checkoutFormGroup.markAllAsTouched();
+      return;
     }
-    console.log("Handling submit button");
-    console.log(this.checkoutFormGroup.get('customer')?.value);
-    console.log(this.checkoutFormGroup.get('billingAddress')?.value);
-    console.log(this.checkoutFormGroup.get('shippingAddress')?.value);
+    
+    let order = new Order();
+    order.totalPrice = this.totalPrice;
+    order.totalQuantity = this.totalQuantity;
+
+    const cartItems = this.cartService.productInCart.products;
+
+    // let orderItems : OrderItem[] = [];
+
+    // for(let i = 0; i < cartItems.length; i++){
+    //   orderItems[i] = new OrderItem(cartItems[i]);
+    // }
+
+    let orderItems: OrderItem[] = cartItems
+                                    .map(tempCartItems => new OrderItem(tempCartItems));
+
+                            
+
+    let purchase = new Purchase();
+
+    purchase.customer = this.checkoutFormGroup.controls['customer'].value;
+
+    purchase.shippingAddress = this.checkoutFormGroup.controls['shippingAddress'].value;
+    const shippingState = JSON.parse(JSON.stringify(purchase.shippingAddress.state));
+    const shippingCountry = JSON.parse(JSON.stringify(purchase.shippingAddress.country));
+    purchase.shippingAddress.state = shippingState.name;
+    purchase.shippingAddress.country = shippingState.name;
+
+    purchase.billingAddress = this.checkoutFormGroup.controls['billingAddress'].value;
+    const billingState = JSON.parse(JSON.stringify(purchase.billingAddress.state));
+    const billingCountry = JSON.parse(JSON.stringify(purchase.billingAddress.country));
+    purchase.billingAddress.state = billingState.name;
+    purchase.billingAddress.country = billingCountry.name;
+    
+
+
+    purchase.orders = order;
+    purchase.orderItems = orderItems;
+
+    console.log("====PURCHASE==== : " + JSON.stringify(purchase));
+
+    this.checkOutService.purchaseItem(purchase).subscribe({
+
+      next: response => {
+        alert(`Your order has been received. \nOrder Tracking Number : ${response.orderTrackingNumber}`);
+        this.resetCart();
+      },
+      error: err =>{
+        alert(`There was an error: ${err.message}`);
+      }
+    })
+
+  }
+
+  resetCart(){
+
+    this.cartService.productInCart.products = []
+    this.cartService.totalPrice.next(0);
+    this.cartService.totalQuantity.next(0);
+
+    this.checkoutFormGroup.reset();
+    this.router.navigateByUrl("/products");
   }
 
 
@@ -175,13 +237,34 @@ export class CheckoutComponent implements OnInit {
   get billingAddressState(){
     return this.checkoutFormGroup.get('billingAddress.state');
   }
+  
+  //credit card form getters
+  get creditCardType(){
+    return this.checkoutFormGroup.get('creditCard.cardType');
+  }
 
+  get creditCardNameOnCard(){
+    return this.checkoutFormGroup.get('creditCard.nameOnCard');
+  }
+
+  get cardNumber(){
+    return this.checkoutFormGroup.get('creditCard.cardNumber');
+  }
+
+  get creditCardSecurityCode(){
+    return this.checkoutFormGroup.get('creditCard.securityCode');
+  }
 
   copyShippingAddressToBillingAddress(event : any){
 
     if(event.target.checked){
+
       this.checkoutFormGroup.controls['billingAddress']
-      .setValue(this.checkoutFormGroup.controls['shippingAddress'].value)
+      .setValue(this.checkoutFormGroup.controls['shippingAddress'].value);
+
+      this.theStatesBilling = this.theStates;
+     
+
     }
     else {
       this.checkoutFormGroup.controls['billingAddress'].reset();

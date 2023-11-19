@@ -21,10 +21,21 @@ export class AddToCartService {
   productInCart!: ProductInCart;
   initialQuantity: number = 0;
 
-
+  storage: Storage = sessionStorage;
 
   constructor(private httpClient: HttpClient) {
     this.totalQuantity.next(0);
+
+    //read data from storage
+    let data = JSON.parse(this.storage.getItem('productInCart')!);
+    console.log(data);
+    
+    if(data != null){
+      this.productInCart = data;
+
+      this.updateTotals(this.productInCart);
+    }
+
    }
 
   addToCart(productId : number): Observable<ProductInCart>{
@@ -43,6 +54,11 @@ export class AddToCartService {
     this.totalPrice.next(response.totalPrice);
     this.totalQuantity.next(response.totalQuantity);
     this.productInCart = response;
+    this.persistCartItems();
+  }
+
+  persistCartItems(){
+    this.storage.setItem('productInCart', JSON.stringify(this.productInCart));
   }
 
 

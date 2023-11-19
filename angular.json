@@ -13,6 +13,14 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "@babel/runtime-corejs3",
+              "ross-fetch",
+              "p-cancelable",
+              "tiny-emitter",
+              "@okta/okta-signin-widget",
+              "cross-fetch"
+            ],
             "outputPath": "dist/desierto-frontend-angular",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -25,7 +33,8 @@
             "styles": [
               "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/@okta/okta-signin-widget/dist/css/okta-sign-in.min.css"
             ],
             "scripts": []
           },

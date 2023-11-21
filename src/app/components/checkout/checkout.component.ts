@@ -49,14 +49,14 @@ export class CheckoutComponent implements OnInit {
         city:['', [Validators.required, ValidatorsUtils.notOnlyWhitespace]],
         state:['', [Validators.required]],
         country:['', [Validators.required]],
-        zipcode:['', [Validators.required]]
+        zipCode:['', [Validators.required]]
       }),
       billingAddress: this.formBuilder.group({
         street: ['', [Validators.required, ValidatorsUtils.notOnlyWhitespace]],
         city:['', [Validators.required, ValidatorsUtils.notOnlyWhitespace]],
         state:['', [Validators.required]],
         country:['', [Validators.required]],
-        zipcode:['', [Validators.required]]
+        zipCode:['', [Validators.required]]
       }),
       creditCard: this.formBuilder.group({
         cardType: ['', [Validators.required]],

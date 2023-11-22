@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OrderHistory } from 'src/app/common/order-history';
+import { OrderHistoryRequest } from 'src/app/request/order-history-request';
 import { OrderHistoryService } from 'src/app/services/order-history.service';
 
 @Component({
@@ -22,9 +23,12 @@ export class OrderHistoryComponent implements OnInit {
     //read the user's email address from browser storage
     const theEmail = JSON.parse(this.storage.getItem('userEmail')!);
     console.log('===== THE EMAIL ====== ' + theEmail);
-    this.orderHistoryService.getOrderHistoryPaginate(theEmail).subscribe(
+
+    const orderHistoryRequest = new OrderHistoryRequest(theEmail, 0, 10);
+
+    this.orderHistoryService.getOrderHistoryPaginate(orderHistoryRequest).subscribe(
       data => {
-        this.orderHistoryList = data._embedded.orders;
+        this.orderHistoryList = data;
       }
     )
   }

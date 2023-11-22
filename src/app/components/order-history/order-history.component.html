@@ -18,9 +18,15 @@
                     <tr *ngFor="let tempOrderHistory of orderHistoryList">
                         <td>
                             {{ tempOrderHistory.orderTrackingNumber }}
-                            {{ tempOrderHistory.totalPrice | currency: 'PHP' }}
+                        </td>
+                        <td>
+                            {{ tempOrderHistory.totalPrice | currency : 'PHP' }}
+                        </td>
+                        <td>
                             {{ tempOrderHistory.totalQuantity }}
-                            {{ tempOrderHistory.dateCreated | date: 'medium' }}
+                        </td>
+                        <td>
+                            {{ tempOrderHistory.date }}
                         </td>
                     </tr>
 

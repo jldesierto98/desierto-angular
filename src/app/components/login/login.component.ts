@@ -12,10 +12,11 @@ import myAppConfig from 'src/app/config/my-app-config';
 })
 export class LoginComponent implements OnInit {
 
-  oktaSignIn: any;
+  oktaSignin: any;
 
   constructor(@Inject(OKTA_AUTH) private oktaAuth: OktaAuth) {
-    this.oktaSignIn = new OktaSignIn({
+
+    this.oktaSignin = new OktaSignIn({
       logo: 'assets/images/logo.png',
       baseUrl: myAppConfig.oidc.issuer.split('/oauth2')[0],
       clientId: myAppConfig.oidc.clientId,
@@ -29,19 +30,19 @@ export class LoginComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.oktaSignIn.remove();
+    this.oktaSignin.remove();
 
-    this.oktaSignIn.renderEl({
-      el: '#okta-sign-in-widget'}, //should be same with div tag in login component
+    this.oktaSignin.renderEl({
+      el: '#okta-sign-in-widget'}, // this name should be same as div tag id in login.component.html
       (response: any) => {
-          if(response.status === 'SUCCESS'){
-            this.oktaAuth.signInWithRedirect();
-          }
+        if (response.status === 'SUCCESS') {
+          this.oktaAuth.signInWithRedirect();
+        }
       },
       (error: any) => {
         throw error;
       }
-      );
+    );
   }
 
 }

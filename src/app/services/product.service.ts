@@ -6,18 +6,21 @@ import { ProductCategory } from '../common/product-category';
 import { ProductListRequest } from '../request/product-list-request';
 import { ProductListResponse } from '../response/product-list-response';
 import { ProductSearchRequest } from '../request/product-search-request';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
+
+  private desiertoEcommerceBackendUrl = environment.desiertoecommerceBackendUrl;
   //backend API
-  private baseUrl = 'http://localhost:8080/api/products/';
-  private categoryUrl = 'http://localhost:8080/api/product-category';
-  private baseUrl2 = 'http://localhost:8080/product/productById';
-  private baseUrl3 = 'http://localhost:8080/product/';
-  private searchByKeywordPaginatedUrl = 'http://localhost:8080/product/search';
+  private baseUrl = this.desiertoEcommerceBackendUrl + '/api/products/';
+  private categoryUrl = this.desiertoEcommerceBackendUrl + '/api/product-category';
+  private baseUrl2 = this.desiertoEcommerceBackendUrl + '/product/productById';
+  private baseUrl3 = this.desiertoEcommerceBackendUrl + '/product/';
+  private searchByKeywordPaginatedUrl = this.desiertoEcommerceBackendUrl + '/product/search';
 
   //inject HttpClient
   constructor(private httpClient: HttpClient) { }

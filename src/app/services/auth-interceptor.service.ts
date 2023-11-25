@@ -19,11 +19,7 @@ export class AuthInterceptorService implements HttpInterceptor {
   private async handleAccess(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
     
     //only add the access token for the secured enpoint
-    const secureEnpoint = ['http://localhost:8080/order/orderHistory', 
-                            'http://localhost:8080/product/productById',
-                            'http://localhost:8080/product',
-                            'http://localhost:8080/state',
-                            'http://localhost:8080/purchase/buy'];
+    const secureEnpoint = ['http://localhost:8080/order/orderHistory'];
 
     if(secureEnpoint.some(url => request.url.includes(url))){
 

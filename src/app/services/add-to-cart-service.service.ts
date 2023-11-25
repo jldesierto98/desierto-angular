@@ -7,13 +7,14 @@ import { Product } from '../common/product';
 import { CartItem } from '../common/cart-item';
 import { Purchase } from '../common/purchase';
 import { PurchaseResponse } from '../response/purchase-response';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AddToCartService {
 
-  private addToCartUrl = 'http://localhost:8080/product/';
+  private addToCartUrl = environment.desiertoecommerceBackendUrl + '/product/';
   private decrement = 'decrement/';
   private remove = 'remove/';
   totalPrice: Subject<number> = new BehaviorSubject<number>(0);

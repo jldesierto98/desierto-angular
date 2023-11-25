@@ -60,6 +60,12 @@
               ],
               "outputHashing": "all"
             },
+            "uat" :{
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.uat.ts"
+              }]
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -79,6 +85,9 @@
             },
             "development": {
               "browserTarget": "desierto-frontend-angular:build:development"
+            },
+            "uat": {
+              "browserTarget": "desierto-frontend-angular:build:uat"
             }
           },
           "defaultConfiguration": "development"

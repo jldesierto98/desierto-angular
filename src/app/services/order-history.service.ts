@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OrderHistory } from '../common/order-history';
 import { OrderHistoryRequest } from '../request/order-history-request';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { OrderHistoryRequest } from '../request/order-history-request';
 export class OrderHistoryService {
 
 
-  private getOrderHistoryUrl = 'http://localhost:8080/order/orderHistory';
+  private getOrderHistoryUrl = environment.desiertoecommerceBackendUrl + '/order/orderHistory';
 
 
   constructor(private httpClient: HttpClient) { }

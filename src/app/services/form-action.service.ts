@@ -3,15 +3,18 @@ import { Observable, map, of } from 'rxjs';
 import { Country } from '../common/country';
 import { HttpClient } from '@angular/common/http';
 import { State } from '../common/state';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormActionService {
 
-  private getCountriesUrl = 'http://localhost:8080/country/all';
-  private getStatesUrl = 'http://localhost:8080/state/all';
-  private getStatesByCountryIdUrl = 'http://localhost:8080/state/';
+  private desiertoEcommerceBackendUrl = environment.desiertoecommerceBackendUrl;
+
+  private getCountriesUrl = this.desiertoEcommerceBackendUrl + '/country/all';
+  private getStatesUrl = this.desiertoEcommerceBackendUrl + '/state/all';
+  private getStatesByCountryIdUrl = this.desiertoEcommerceBackendUrl + '/state/';
 
   constructor(private httpClient: HttpClient) { }
 

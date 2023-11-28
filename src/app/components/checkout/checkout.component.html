@@ -298,123 +298,20 @@
 
                 </div>
 
+                <!-- Credit Card Processing (Stripe) -->
                 <div formGroupName="creditCard" class="form-area">
-                    <h3>Credit Card</h3>
 
-                    <div class="row">
-                        <div class="col-md-2"><label>Card Type</label></div>
-                        <div class="col-md-7">
-                            <div class="input-space">
-                                <select formControlName="cardType">
-                                    <option>VISA</option>
-                                    <option>MASTER CARD</option>
-                                </select>
+                    <h3>Credit or Debit Card</h3>
 
-                                <div *ngIf="creditCardType?.invalid && (creditCardType?.dirty || creditCardType?.touched)"
-                                    class="alert alert-warning mt-1">
+                    <div id="card-element">
 
-                                    <div *ngIf="creditCardType?.hasError('required')">
-                                        Please specify Card Type.
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-2"><label>Name On Card</label></div>
-                        <div class="col-md-7">
-                            <div class="input-space">
-                                <input formControlName="nameOnCard" type="text">
-
-                                <div *ngIf="creditCardNameOnCard?.invalid && (creditCardNameOnCard?.dirty || creditCardNameOnCard?.touched)"
-                                    class="alert alert-warning mt-1">
-
-                                    <div *ngIf="creditCardNameOnCard?.hasError('required') || creditCardNameOnCard?.hasError('notOnlyWhitespace')">
-                                        Name is required.
-                                    </div>
-
-                                    <div *ngIf="creditCardNameOnCard?.hasError('minlength')">
-                                         Name must be at least 2 characters long.
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-2"><label>Card Number</label></div>
-                        <div class="col-md-7">
-                            <div class="input-space">
-                                <input formControlName="cardNumber" type="text">
-
-                                <div *ngIf="cardNumber?.invalid && (cardNumber?.dirty || cardNumber?.touched)"
-                                    class="alert alert-warning mt-1">
-
-                                    <div *ngIf="cardNumber?.hasError('required')">
-                                        Please enter your card number.
-                                    </div>
-
-                                    <div *ngIf="cardNumber?.hasError('pattern')">
-                                        Please enter valid card number.
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-2"><label>Security Code</label></div>
-                        <div class="col-md-2">
-                            <div class="input-space">
-                                <input formControlName="securityCode" type="text">
-                                <div *ngIf="creditCardSecurityCode?.invalid && (creditCardSecurityCode?.dirty || creditCardSecurityCode?.touched)"
-                                    class="alert alert-warning mt-1">
-
-                                    <div *ngIf="creditCardSecurityCode?.hasError('required')">
-                                        Please enter your security code.
-                                    </div>
-
-                                    <div *ngIf="creditCardSecurityCode?.hasError('pattern')">
-                                        Please enter valid security code.
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-2"><label>Expiration Month</label></div>
-                        <div class="col-md-7">
-                            <div class="input-space">
-                                <select formControlName="expirationMonth">
-                                    <option *ngFor="let month of theMonths">
-                                        {{ month }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-2"><label>Expiration Year</label></div>
-                        <div class="col-md-7">
-                            <div class="input-space">
-                                <select formControlName="expirationYear" (change)="handleMonthsAndYears()">
-                                    <option *ngFor="let year of theYears">
-                                        {{ year }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Display form errors -->
+                    <div id="card-errors" class="displayError.textContent != '' : 'alert alert-danger mt-1"></div>
 
                 </div>
-
+                   
                 <div class="form-area">
                     <h3>Review Your Order</h3>
 

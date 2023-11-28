@@ -13,6 +13,8 @@ import { CartItem } from 'src/app/common/cart-item';
 import { OrderItem } from 'src/app/common/order-item';
 import { Purchase } from 'src/app/common/purchase';
 import { Customer } from 'src/app/common/customer';
+import { environment } from 'src/environments/environment';
+import { PaymentInfo } from 'src/app/common/payment-info';
 
 @Component({
   selector: 'app-checkout',
@@ -33,13 +35,22 @@ export class CheckoutComponent implements OnInit {
 
   storage: Storage = sessionStorage;
 
+  stripe = Stripe(environment.stripePublishableKey);
+
+  paymentInfo: PaymentInfo = new PaymentInfo();
+  cardElement: any;
+  displayError: any = "";
+
   constructor(private formBuilder: FormBuilder,
-    private cartService: AddToCartService,
-    private formActionService: FormActionService,
-    private checkOutService: CheckoutServiceService,
-    private router: Router) { }
+              private cartService: AddToCartService,
+              private formActionService: FormActionService,
+              private checkOutService: CheckoutServiceService,
+              private router: Router) { }
 
   ngOnInit(): void {
+
+    // setup Stripe payment form
+    this.setupStripePaymentForm();
 
     //read user's email through browser storage
     const theEmail = JSON.parse(this.storage.getItem('userEmail')!)
@@ -65,12 +76,15 @@ export class CheckoutComponent implements OnInit {
         zipCode:['', [Validators.required]]
       }),
       creditCard: this.formBuilder.group({
+        /*
         cardType: ['', [Validators.required]],
         nameOnCard: ['', [Validators.required, Validators.minLength(2), ValidatorsUtils.notOnlyWhitespace]],
         cardNumber: ['', [Validators.required, Validators.pattern('[0-9]{16}')]],
         securityCode: ['', [Validators.required, Validators.pattern('[0-9]{3}')]],
         expirationMonth: [''],
         expirationYear: ['']
+        */
+
       })
 
     });
@@ -81,6 +95,7 @@ export class CheckoutComponent implements OnInit {
 
     console.log(`CHECKOUT COMP QUANTITY =======> ${this.totalQuantity}`);
 
+    /*
     const startMonth: number = new Date().getMonth() + 1;
 
     this.formActionService.getCreditCardMonths(startMonth).subscribe(
@@ -94,6 +109,7 @@ export class CheckoutComponent implements OnInit {
         this.theYears = data;
       }
     );
+    */
 
     this.formActionService.getCountries().subscribe(
       data => {
@@ -103,6 +119,35 @@ export class CheckoutComponent implements OnInit {
   
 
   }  
+
+  setupStripePaymentForm() {
+    
+
+      // get a handle to stripe elements
+      var elements = this.stripe.elements();
+  
+      // Create a card element ... and hide the zip-code field
+      this.cardElement = elements.create('card', { hidePostalCode: true });
+  
+      // Add an instance of card UI component into the 'card-element' div
+      this.cardElement.mount('#card-element');
+  
+      // Add event binding for the 'change' event on the card element
+      this.cardElement.on('change', (event: { complete: any; error: { message: any; }; }) => {
+  
+        // get a handle to card-errors element
+        this.displayError = document.getElementById('card-errors');
+  
+        if (event.complete) {
+          this.displayError.textContent = "";
+        } else if (event.error) {
+          // show validation error to customer
+          this.displayError.textContent = event.error.message;
+        }
+  
+      });
+    
+  }
 
   reviewCartStatus() {
 
@@ -162,9 +207,16 @@ export class CheckoutComponent implements OnInit {
 
     purchase.orders = order;
     purchase.orderItems = orderItems;
+    
+
+    // handle payment info as per Stripe's requirements
+    // Dollar to Cents
+    this.paymentInfo.amount = Math.round(this.totalPrice * 100);
+    this.paymentInfo.currency = "USD";
 
     console.log("====PURCHASE==== : " + JSON.stringify(purchase));
 
+    /*
     this.checkOutService.purchaseItem(purchase).subscribe({
 
       next: response => {
@@ -175,6 +227,50 @@ export class CheckoutComponent implements OnInit {
         alert(`There was an error: ${err.message}`);
       }
     })
+    */
+
+
+    // if form is valid
+    // - create payment intent
+    // - confirm card payment
+    // - place order
+
+    if(!this.checkoutFormGroup.invalid && this.displayError.textContent === "") {
+
+      this.checkOutService.createPaymentIntent(this.paymentInfo).subscribe(
+        (paymentIntentResponse) => {
+          //send credit card data to stripe.com servers
+          this.stripe.confirmCardPayment(paymentIntentResponse.client_secret, 
+            {
+              payment_method: {
+                card: this.cardElement
+              }
+            }, {handleActions: false})
+            .then((result: any) => {
+              if(result.error){
+                //inform the customer that there was an error
+                alert(`There was an error:  ${result.error.message}`)
+              } else {
+                // Call REST API via CheckOutService
+                this.checkOutService.purchaseItem(purchase).subscribe({
+                  next: (response: any) => {
+                    alert(`Your order has been received. \nOrder Tracking Number: ${response.orderTrackingNumber}`);
+
+                    this.resetCart();
+                  },
+                  error: (err: any) => {
+                    alert(`There was an error: ${err.message}`);
+                  }
+                })
+              }
+            })
+        }
+      );
+    } else {
+      this.checkoutFormGroup.markAllAsTouched();
+      return;
+    }
+
 
   }
 

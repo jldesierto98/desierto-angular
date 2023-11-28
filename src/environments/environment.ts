@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  desiertoecommerceBackendUrl: "https://localhost:8443"
+  desiertoecommerceBackendUrl: "https://localhost:8443",
+  stripePublishableKey: "pk_test_51OGzZvBCQW7JTDJl3Zay6iE8l1120ycM3tWavVDrjx3i67c4MUe1HC99zSl0BZCHCzamyou4t3AgBZMQhR0uEo2C00AcYIyrE6"
 };
 
 /*

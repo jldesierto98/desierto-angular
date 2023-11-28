@@ -55,6 +55,8 @@ export class CheckoutComponent implements OnInit {
     //read user's email through browser storage
     const theEmail = JSON.parse(this.storage.getItem('userEmail')!)
 
+    this.storage.removeItem('productInCart');
+
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
         firstName: ['', [Validators.required, Validators.minLength(2), ValidatorsUtils.notOnlyWhitespace]],
@@ -257,6 +259,7 @@ export class CheckoutComponent implements OnInit {
                     alert(`Your order has been received. \nOrder Tracking Number: ${response.orderTrackingNumber}`);
 
                     this.resetCart();
+                    this.storage.removeItem('productInCart');
                   },
                   error: (err: any) => {
                     alert(`There was an error: ${err.message}`);
@@ -279,6 +282,7 @@ export class CheckoutComponent implements OnInit {
     this.cartService.productInCart.products = []
     this.cartService.totalPrice.next(0);
     this.cartService.totalQuantity.next(0);
+    this.cartService.persistCartItems();
 
     this.checkoutFormGroup.reset();
     this.router.navigateByUrl("/products");
